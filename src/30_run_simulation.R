@@ -3,7 +3,7 @@
 
 # With the following parameters
   # baseline year 2002 (with the starting population informed by a pooled sample from years 2001-2003)
-  # starting population size 100,000 people
+  # starting population size 10,000 people
   # time horizon 2030
   # continuing trends in smoking up to 2030
   # observed trends in mortality to 2016, remaining stationary thereafter except for effects of changes to smoking
@@ -13,10 +13,31 @@ library(data.table)
 library(stapmr)
 library(tobalcepi)
 
-# Load the prepared data
-
-# Starting population
+# Load the prepared data on tobacco consumption
 behav_data <- fread("output/HSE_2001_to_2016_imputed.csv")
+
+# Create the synthetic population
+synthpop_data <- stapmr::MakePop(
+  data_pop = behav_data, # the behaviour dataset
+  pop_size = 1e4, # the size of the synthetic population
+  baseline_year = 2002, # the starting year of the model
+  baseline_sample_years = 2001:2003, # the years of survey data that will inform the synth pop
+  n_random_processes = 6, # the number of random processes in the model simulation
+  pop_seed = 1, # the random seed for the generation of the synth pop
+  pop_keepvars = c( # the variable to keep
+    "age",
+    "sex",
+    "imd_quintile",
+    "smk.state",
+    "time_since_quit",
+    "cigs_per_day",
+    "smoker_cat"
+  )
+)
+
+
+
+
 
 # Transition probabilities
 init_data <- fread("output/init_data.csv")
