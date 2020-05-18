@@ -6,7 +6,7 @@ library(smktrans)
 library(data.table)
 
 # Load the data
-hse_data <- fread("output/HSE_2001_to_2016_imputed.csv")
+hse_data <- fread("intermediate_data/HSE_2001_to_2016_imputed.csv")
 
 ###############################
 # Initiation
@@ -99,8 +99,8 @@ forecast_data <- quit_forecast(
 )
 
 # Save the estimated transition probabilities
-write.table(smk_init_data, "output/init_data.csv", row.names = F, sep = ",")
-write.table(relapse_data$relapse_by_age_imd_timesincequit, "output/relapse_data.csv", row.names = F, sep = ",")
-write.table(forecast_data, "output/quit_data.csv", row.names = F, sep = ",")
+write.table(smk_init_data, "intermediate_data/init_data.csv", row.names = F, sep = ",")
+write.table(relapse_data$relapse_by_age_imd_timesincequit, "intermediate_data/relapse_data.csv", row.names = F, sep = ",")
+write.table(forecast_data, "intermediate_data/quit_data.csv", row.names = F, sep = ",")
 
 

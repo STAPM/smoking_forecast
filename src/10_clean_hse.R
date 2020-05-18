@@ -117,13 +117,13 @@ setnames(data,
          c("smk_start_age", "cig_smoker_status", "years_since_quit"),
          c("start_age", "smk.state", "time_since_quit"))
 
-write.table(data, "output/HSE_2001_to_2016.csv", row.names = FALSE, sep = ",")
+write.table(data, "intermediate_data/HSE_2001_to_2016.csv", row.names = FALSE, sep = ",")
 
 ################
 # Impute missing values
 
 # Load the data
-data <- fread("output/HSE_2001_to_2016.csv")
+data <- fread("intermediate_data/HSE_2001_to_2016.csv")
 
 # view variables with missingness
 misscheck <- function(var) {
@@ -189,6 +189,6 @@ imp <- impute_data_mice(
 
 data_imp <- copy(imp$data)
 
-write.table(data_imp, "output/HSE_2001_to_2016_imputed.csv", row.names = FALSE, sep = ",")
+write.table(data_imp, "intermediate_data/HSE_2001_to_2016_imputed.csv", row.names = FALSE, sep = ",")
 
 

@@ -17,7 +17,7 @@ library(tobalcepi)
 behav_data <- fread("output/HSE_2001_to_2016_imputed.csv")
 
 # Create the synthetic population
-synthpop_data <- stapmr::MakePop(
+synthpop <- stapmr::MakePop(
   data_pop = behav_data, # the behaviour dataset
   pop_size = 1e4, # the size of the synthetic population
   baseline_year = 2002, # the starting year of the model
@@ -34,10 +34,6 @@ synthpop_data <- stapmr::MakePop(
     "smoker_cat"
   )
 )
-
-
-
-
 
 # Transition probabilities
 init_data <- fread("output/init_data.csv")
