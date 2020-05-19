@@ -19,7 +19,7 @@ root_dir <- "/Volumes/Shared/"
 
 # Load the processed mortality data
 tob_mort_data <- fread(paste0(root_dir,
-      "ScHARR/PR_Mortality_data_TA/Code/model_inputs/intermediate_data/tob_death_rates_national_2019-05-06_mort.tools_1.0.0.csv"))
+      "ScHARR/PR_Mortality_data_TA/Code/model_inputs/Output/tob_death_rates_national_2019-05-06_mort.tools_1.0.0.csv"))
 
 # Filter data
 tob_mort_data <- tob_mort_data[age %in% 11:89 & !is.na(cause) , c("age",
@@ -46,7 +46,7 @@ tob_mort_data_trans[ , `:=`(n_deaths = NULL, pops = NULL)]
 setorderv(tob_mort_data_trans, c("age", "year", "sex", "imd_quintile"), c(1, 1, 1, 1))
 
 # Save the data for use in estimating smoking transition probabilities
-write.table(tob_mort_data_trans, "intermediate_data/tob_mort_data_trans.csv", row.names = FALSE, sep = ",")
+saveRDS(tob_mort_data_trans, "intermediate_data/tob_mort_data_trans.rds")
 
 rm(tob_mort_data_trans)
 gc()
@@ -78,7 +78,7 @@ tob_mort_data_cause <- copy(cforecast$mx_data_cause)
 setnames(tob_mort_data_cause, c("cause", "mx"), c("condition", "mix"))
 
 # Save the data for use in the simulation model
-write.table(tob_mort_data_cause, "intermediate_data/tob_mort_data_cause.csv", row.names = FALSE, sep = ",")
+saveRDS(tob_mort_data_cause, "intermediate_data/tob_mort_data_cause.rds")
 
 rm(tob_mort_data_cause)
 gc()
