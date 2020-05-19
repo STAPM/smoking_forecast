@@ -33,6 +33,6 @@ devtools::install_git(
 devtools::install_git(
   "https://gitlab.com/stapm/stapmr.git",
   credentials = git2r::cred_user_pass("dosgillespie", getPass::getPass()),
-  ref = "0.4.1",
+  ref = "0.4.4",
   build_vignettes = TRUE
 )
