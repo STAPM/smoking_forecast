@@ -1,5 +1,4 @@
 # Example workflow for forecasting smoking prevalence
-
 The code in this repo is part of the STAPM programme of modelling. STAPM was created as part of a programme of work on the health economics of tobacco and alcohol at the School of Health and Related Research (ScHARR), The University of Sheffield. This programme is based around the construction of the Sheffield Tobacco and Alcohol Policy
 Model (STAPM), which aims to use comparable methodologies to evaluate the impacts of tobacco and alcohol policies, and investigate the consequences of clustering and interactions between tobacco and alcohol consumption behaviours. See the [STAPM webpage](https://stapm.gitlab.io/).   
 
