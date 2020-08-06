@@ -6,7 +6,8 @@ library(smktrans)
 library(data.table)
 
 # Load the data
-hse_data <- fread("intermediate_data/HSE_2001_to_2016_imputed.csv")
+hse_data <- readRDS("intermediate_data/HSE_2001_to_2016_tobacco_imputed.rds")
+tob_mort_data_cause <- readRDS("intermediate_data/tob_mort_data_cause.rds")
 
 ###############################
 # Initiation
@@ -72,7 +73,7 @@ survivorship_data <- smktrans::prep_surv(
 mortality_data <- smktrans::smoke_surv(
   data = hse_data,
   diseases  = unique(tobalcepi::tobacco_relative_risks$condition),
-  mx_data = stapmr::tob_mort_data_cause
+  mx_data = tob_mort_data_cause
 )
 
 # Calculate quit probabilities
@@ -99,8 +100,8 @@ forecast_data <- quit_forecast(
 )
 
 # Save the estimated transition probabilities
-write.table(smk_init_data, "intermediate_data/init_data.csv", row.names = F, sep = ",")
-write.table(relapse_data$relapse_by_age_imd_timesincequit, "intermediate_data/relapse_data.csv", row.names = F, sep = ",")
-write.table(forecast_data, "intermediate_data/quit_data.csv", row.names = F, sep = ",")
+saveRDS(smk_init_data, "intermediate_data/init_data.rds")
+saveRDS(relapse_data$relapse_by_age_imd_timesincequit, "intermediate_data/relapse_data.rds")
+saveRDS(forecast_data, "intermediate_data/quit_data.rds")
 
 

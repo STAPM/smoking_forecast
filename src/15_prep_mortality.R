@@ -18,8 +18,12 @@ library(magrittr)
 root_dir <- "/Volumes/Shared/"
 
 # Load the processed mortality data
-tob_mort_data <- fread(paste0(root_dir,
-      "ScHARR/PR_Mortality_data_TA/Code/model_inputs/Output/tob_death_rates_national_2019-05-06_mort.tools_1.0.0.csv"))
+#tob_mort_data <- fread(paste0(root_dir,
+#      "ScHARR/PR_Mortality_data_TA/Code/model_inputs/Output/tob_death_rates_national_2019-05-06_mort.tools_1.0.0.csv"))
+
+#saveRDS(tob_mort_data, "intermediate_data/tob_mort_data.rds")
+
+tob_mort_data <- readRDS("intermediate_data/tob_mort_data.rds")
 
 # Filter data
 tob_mort_data <- tob_mort_data[age %in% 11:89 & !is.na(cause) , c("age",
@@ -68,7 +72,7 @@ tob_mort_data[ , mx_cause := n_deaths / pops]
 cforecast <- mort.tools::CombinedForecast(
   data = tob_mort_data,
   forecast_params = params,
-  n_years = 2100 - 2016, # time horizon - jumpoff year
+  n_years = 2100 - 2016 # time horizon - jumpoff year
 )
 
 # Grab the cause-specific forecast

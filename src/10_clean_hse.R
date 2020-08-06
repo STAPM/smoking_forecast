@@ -2,6 +2,10 @@
 # The aim of this code is to process the Health Survey for England data
 # into the form required to estimate smoking transition probabilities
 
+# Use the age range 11 - 89
+# and years 2001 - 2016
+# years after 2016 cannot yet be used because the population and mortality data for 2017+ have not yet been processed
+
 # Load the required packages
 library(hseclean)
 library(magrittr)
@@ -10,7 +14,30 @@ library(data.table)
 # Set the file path to point to the University of Sheffield X drive
 root_dir <- "/Volumes/Shared/"
 
-# apply functions to create the variables for analysis and to retain only the required variables
+# Due to poor internet connection, read each year of raw data and save locally
+
+storage_location <- "/Users/duncangillespie/Documents/HSE/"
+
+#saveRDS(read_2001(root = root_dir), paste0(storage_location, "HSE_2001.rds"))
+#saveRDS(read_2002(root = root_dir), paste0(storage_location, "HSE_2002.rds"))
+#saveRDS(read_2003(root = root_dir), paste0(storage_location, "HSE_2003.rds"))
+#saveRDS(read_2004(root = root_dir), paste0(storage_location, "HSE_2004.rds"))
+#saveRDS(read_2005(root = root_dir), paste0(storage_location, "HSE_2005.rds"))
+#saveRDS(read_2006(root = root_dir), paste0(storage_location, "HSE_2006.rds"))
+#saveRDS(read_2007(root = root_dir), paste0(storage_location, "HSE_2007.rds"))
+#saveRDS(read_2008(root = root_dir), paste0(storage_location, "HSE_2008.rds"))
+#saveRDS(read_2009(root = root_dir), paste0(storage_location, "HSE_2009.rds"))
+#saveRDS(read_2010(root = root_dir), paste0(storage_location, "HSE_2010.rds"))
+#saveRDS(read_2011(root = root_dir), paste0(storage_location, "HSE_2011.rds"))
+#saveRDS(read_2012(root = root_dir), paste0(storage_location, "HSE_2012.rds"))
+#saveRDS(read_2013(root = root_dir), paste0(storage_location, "HSE_2013.rds"))
+#saveRDS(read_2014(root = root_dir), paste0(storage_location, "HSE_2014.rds"))
+#saveRDS(read_2015(root = root_dir), paste0(storage_location, "HSE_2015.rds"))
+#saveRDS(read_2016(root = root_dir), paste0(storage_location, "HSE_2016.rds"))
+#saveRDS(read_2017(root = root_dir), paste0(storage_location, "HSE_2017.rds"))
+
+
+# Apply functions to create the variables for analysis and to retain only the required variables
 
 # The variables to retain
 keep_vars = c(
@@ -38,7 +65,7 @@ keep_vars = c(
   "cig_smoker_status",
   "years_since_quit", "years_reg_smoker", "cig_ever",
   "smk_start_age", "smk_stop_age", "censor_age", 
-  "cigs_per_day", "smoker_cat"
+  "cigs_per_day", "smoker_cat", "hand_rolled_per_day", "machine_rolled_per_day", "prop_handrolled", "cig_type"
   
 )
 
@@ -66,7 +93,7 @@ cleandata <- function(data) {
     smk_amount %>%
     
     select_data(
-      ages = 8:89,
+      ages = 11:89,
       years = 2001:2016,
       
       # variables to retain
@@ -81,26 +108,26 @@ cleandata <- function(data) {
 
 # Read and clean each year of data and bind them together in one big dataset
 data <- combine_years(list(
-  cleandata(read_2001(root = root_dir)),
-  cleandata(read_2002(root = root_dir)),
-  cleandata(read_2003(root = root_dir)),
-  cleandata(read_2004(root = root_dir)),
-  cleandata(read_2005(root = root_dir)),
-  cleandata(read_2006(root = root_dir)),
-  cleandata(read_2007(root = root_dir)),
-  cleandata(read_2008(root = root_dir)),
-  cleandata(read_2009(root = root_dir)),
-  cleandata(read_2010(root = root_dir)),
-  cleandata(read_2011(root = root_dir)),
-  cleandata(read_2012(root = root_dir)),
-  cleandata(read_2013(root = root_dir)),
-  cleandata(read_2014(root = root_dir)),
-  cleandata(read_2015(root = root_dir)),
-  cleandata(read_2016(root = root_dir))
+  cleandata(readRDS(paste0(storage_location, "HSE_2001.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2002.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2003.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2004.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2005.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2006.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2007.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2008.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2009.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2010.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2011.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2012.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2013.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2014.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2015.rds"))),
+  cleandata(readRDS(paste0(storage_location, "HSE_2016.rds")))
 ))
 
 # clean the survey weights
-data <- clean_surveyweights(data)
+data <- clean_surveyweights(data, pop_data = stapmr::pop_counts)
 
 # remake age categories
 data[, age_cat := c("11-15",
@@ -117,13 +144,15 @@ setnames(data,
          c("smk_start_age", "cig_smoker_status", "years_since_quit"),
          c("start_age", "smk.state", "time_since_quit"))
 
-write.table(data, "intermediate_data/HSE_2001_to_2016.csv", row.names = FALSE, sep = ",")
+# Save data
+saveRDS(data, "intermediate_data/HSE_2001_to_2016_tobacco.rds")
+
 
 ################
 # Impute missing values
 
 # Load the data
-data <- fread("intermediate_data/HSE_2001_to_2016.csv")
+data <- readRDS("intermediate_data/HSE_2001_to_2016_tobacco.rds")
 
 # view variables with missingness
 misscheck <- function(var) {
@@ -189,6 +218,7 @@ imp <- impute_data_mice(
 
 data_imp <- copy(imp$data)
 
-write.table(data_imp, "intermediate_data/HSE_2001_to_2016_imputed.csv", row.names = FALSE, sep = ",")
+# Save data
+saveRDS(data_imp, "intermediate_data/HSE_2001_to_2016_tobacco_imputed.rds")
 
 
