@@ -19,7 +19,6 @@ There are two options for getting access to the data required to run the code in
 The **inputs** are:   
 
 1.  A population data sample with details of tobacco consumption from the Health Survey for England. These data are for ages 11--89 years and years 2001--2016. The data have had missing values for key socio-economic variables imputed.   
-    consumption.  
 2.  Smoking transition probabilities - three files covering smoking initiation, quitting and relapse.   
 3.  Cause-specific rates of mortality that have been forecast into the future.  
 
